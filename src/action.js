@@ -35,6 +35,45 @@ export const addDocument = async(collection, data) => {
         result.error= error
     }
     return result
+}
+
+export const getDocument = async(collection, id) => {
+    const result ={statusResponde : false, data: null , error:null}
+    try {
+        const response = await db.collection(collection).doc(id).get()
+        result.data = {id: response. id, ... response.data()}
+        result.statusResponde = true
+
+    } catch (error) {
+        result.error=error
+    }
+
+    return result
+}
+
+export const updateDocument = async(collection, id,data) => {
+    const result ={statusResponde : false, data: null , error:null}
+    try {
+       await db.collection(collection).doc(id).update(data)
+       result.statusResponde = true 
+
+    } catch (error) {
+        result.error=error
+    }
+
+    return result
+}
 
 
+export const deleteDocument = async(collection, id) => {
+    const result ={statusResponde : false,error:null}
+    try {
+        await db.collection(collection).doc(id).delete()
+                result.statusResponde = true 
+
+    } catch (error) {
+        result.error=error
+    }
+
+    return result
 }

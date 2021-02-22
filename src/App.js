@@ -1,7 +1,7 @@
 
 import React , {useState,useEffect }from 'react'
 import { isEmpty,size } from 'lodash'
-import { addDocument, getCollection } from './action'
+import { addDocument, deleteDocument, getCollection, updateDocument } from './action'
 
 
 function App() {
@@ -60,8 +60,17 @@ useEffect(() => {
     setTask("")
   }
 
-  const deleteTask = (id) =>
+  const deleteTask =async (id) =>
   {
+
+    const result= await deleteDocument("tasks",id)
+    if(!result.statusResponde)
+      {
+        setError(result.error)
+        return
+      }
+
+
     const filteredTasks = tasks.filter(task => task.id !== id)
     setTasks(filteredTasks)
   }
@@ -73,15 +82,21 @@ useEffect(() => {
    setId(theTask.id)
   }
 
-
-  const saveTask= (e) => {
+  const saveTask= async (e) => {
     e.preventDefault()
-    if(isEmpty(task)){
-      console.log("Task empty")
+   
+
+    if(!ValidForm()){
       return
     }
 
-   // setTasks([... tasks,newTask])
+    const result = await updateDocument("tasks", id,{name:task})
+    if(!result.statusResponde){
+      setError(result.error)
+      return
+    }
+
+
 
    const editedTasks = tasks.map (item => item.id === id ? {id,name:task}: item)
    setTasks(editedTasks)
